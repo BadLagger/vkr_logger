@@ -4,4 +4,5 @@
 !.gitignore
 !go.mods
 !*.json
+!Makefile
 !*/
