@@ -1,0 +1,11 @@
+{
+    "collector_socket": "/var/run/metrics_collector.sock",
+    "log_dir": "/mnt/external/templogs",
+    "csv_delimiter": ",",
+    "rotation": {
+        "max_records_per_file": 3600,
+        "max_files_count": 5,
+        "enabled": true
+    },
+    "control_socket": "/var/run/metrics_logger_control.sock"
+}

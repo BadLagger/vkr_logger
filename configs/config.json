@@ -1,0 +1,11 @@
+{
+    "collector_socket": "../vkr_collector/metrics_collector.sock",
+    "log_dir": "./metrics",
+    "csv_delimiter": ",",
+    "rotation": {
+        "max_records_per_file": 10,
+        "max_files_count": 3,
+        "enabled": true
+    },
+    "control_socket": "./metrics_logger_control.sock"
+}
