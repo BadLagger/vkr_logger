@@ -1,0 +1,10 @@
+[Unit]
+Description=Temperature Logger Service
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/vkr/logger /etc/vkr/logger_config.json
+User=root
+
+[Install]
+WantedBy=multi-user.target

@@ -5,4 +5,5 @@
 !go.mods
 !*.json
 !Makefile
+!*.service
 !*/

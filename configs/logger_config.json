@@ -4,7 +4,7 @@
     "csv_delimiter": ",",
     "rotation": {
         "max_records_per_file": 3600,
-        "max_files_count": 5,
+        "max_files_count": 10,
         "enabled": true
     },
     "control_socket": "/var/run/metrics_logger_control.sock"
