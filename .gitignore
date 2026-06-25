@@ -2,7 +2,7 @@
 
 !*.go
 !.gitignore
-!go.mods
+!go.mod
 !*.json
 !Makefile
 !*.service
