@@ -1,11 +1,11 @@
 {
-    "collector_socket": "/var/run/metrics_collector.sock",
-    "log_dir": "/mnt/external/templogs",
+    "collector_socket": "/var/run/mlsysguard/metrics_collector.sock",
+    "log_dir": "/mnt/external/logs",
     "csv_delimiter": ",",
     "rotation": {
         "max_records_per_file": 3600,
-        "max_files_count": 10,
+        "max_files_count": 24,
         "enabled": true
     },
-    "control_socket": "/var/run/metrics_logger_control.sock"
+    "control_socket": "/var/run/mlsysguard/metrics_logger_control.sock"
 }
