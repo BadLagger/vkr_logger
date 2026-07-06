@@ -6,4 +6,5 @@
 !*.json
 !Makefile
 !*.service
+!*.service.in
 !*/
