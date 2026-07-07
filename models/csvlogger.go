@@ -262,6 +262,8 @@ func (l *CSVLogger) handleControlCommand(conn net.Conn) {
 
 	command := strings.TrimSpace(string(buf[:n]))
 
+	l.log.Debug("Control command: %s", command)
+
 	switch command {
 	case "ENABLE":
 		l.Enable()
@@ -287,14 +289,24 @@ func (l *CSVLogger) handleControlCommand(conn net.Conn) {
 	}
 }
 
-func (l *CSVLogger) Enable() {
-	l.runningMutex.Lock()
-	defer l.runningMutex.Unlock()
+func (l *CSVLogger) Enable() error {
+	lock := l.runningMutex.TryLock()
+
+	if !lock {
+		l.log.Error("Can't lock mutex")
+		return fmt.Errorf("can't lock mutex")
+	}
+
+	defer func (){
+		if lock {
+			l.runningMutex.Unlock()
+		}
+	}()
 
 	l.log.Debug("Try Enable!")
 	if l.running {
 		l.log.Debug("Already Enabled!")
-		return
+		return fmt.Errorf("already enabled!")
 	}
 
 	l.running = true
@@ -304,14 +316,14 @@ func (l *CSVLogger) Enable() {
 	if err := l.subscribeToCollector(); err != nil {
 		fmt.Printf("Failed to subscribe: %v\n", err)
 		l.running = false
-		return
+		return err
 	}
 
 	// Запускаем обработчики
 	l.wg.Add(2)
 	go l.listenForData()
 	go l.processData()
-
+	return nil
 }
 
 func (l *CSVLogger) Disable() {
@@ -388,10 +400,14 @@ func (l *CSVLogger) startControlServer() error {
 
 	l.controlServer = listener
 
+	l.log.Debug("ControlService created!")
+
 	go func() {
 		for {
 			conn, err := listener.Accept()
+			l.log.Debug("Get control request!")
 			if err != nil {
+				l.log.Error("Control request error: %v", err)
 				return
 			}
 			go l.handleControlCommand(conn)
@@ -409,8 +425,12 @@ func (l *CSVLogger) Start() error {
 
 	// Если логирование включено по умолчанию
 	if l.cfg.Rotation.Enabled {
-		l.log.Debug("Logger aaa enabled!")
-		l.Enable()
+		l.log.Debug("Logger enabled!")
+		err := l.Enable()
+		if err != nil {
+			l.log.Critical("can't enable log")
+			return err
+		}
 	}
 
 	fmt.Printf("Logger started. Control socket: %s\n", l.cfg.ControlSocket)
