@@ -420,8 +420,11 @@ func (l *CSVLogger) startControlServer() error {
 func (l *CSVLogger) Start() error {
 	// Запускаем сервер управления
 	if err := l.startControlServer(); err != nil {
+		l.log.Critical("Start fail: %v", err)
 		return err
 	}
+
+	l.log.Debug("Check logging enbling!")
 
 	// Если логирование включено по умолчанию
 	if l.cfg.Rotation.Enabled {
@@ -433,7 +436,7 @@ func (l *CSVLogger) Start() error {
 		}
 	}
 
-	fmt.Printf("Logger started. Control socket: %s\n", l.cfg.ControlSocket)
+	l.log.Info("Logger started. Control socket: %s\n", l.cfg.ControlSocket)
 
 	return nil
 }
