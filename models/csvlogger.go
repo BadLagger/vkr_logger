@@ -363,8 +363,23 @@ func (l *CSVLogger) forceRotate() {
 }
 
 func (l *CSVLogger) startControlServer() error {
-	// Удаляем существующий сокет
-	os.Remove(l.cfg.ControlSocket)
+	
+	_, err := os.Stat(l.cfg.ControlSocket)
+	if err == nil {
+		err = os.Remove(l.cfg.ControlSocket)
+		if err != nil {
+			return fmt.Errorf("can't delete old socket %s (%v)", l.cfg.ControlSocket, err)
+		}
+	}
+
+	dirpath := filepath.Dir(l.cfg.ControlSocket)
+	_, err = os.Stat(dirpath)
+	if err != nil && os.IsNotExist(err) {
+		err = os.MkdirAll(dirpath, 0755)
+		if err != nil {
+			return fmt.Errorf("can't create dirpath %s (%v)", dirpath, err)
+		}
+	} 
 
 	listener, err := net.Listen("unix", l.cfg.ControlSocket)
 	if err != nil {
